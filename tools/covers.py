@@ -191,23 +191,37 @@ def ladder():
 
 
 def chillrider():
-    defs = '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b4b8a"/><stop offset="0.5" stop-color="#f08a7e"/><stop offset="1" stop-color="#ffcf9e"/></linearGradient>'
-    body = '<rect width="640" height="400" fill="url(#sky)"/>'
-    body += '<circle cx="320" cy="250" r="90" fill="#ffe2a8" opacity="0.95"/>'
-    for i, y in enumerate([215, 235, 252, 266]):
-        body += f'<rect x="200" y="{y}" width="240" height="{4+i}" fill="#f4a38c" opacity="0.8"/>'
-    body += '<path d="M0 270 Q160 240 320 270 T640 262 V400 H0Z" fill="#a8607a"/>'
-    body += '<path d="M290 400 L316 270 L324 270 L350 400Z" fill="#6e3f5f"/>'
-    # bike
-    body += '<g transform="translate(470 300)" stroke="#2c1e33" stroke-width="4" fill="none" stroke-linecap="round"><circle cx="-26" cy="0" r="18"/><circle cx="26" cy="0" r="18"/><path d="M-26 0 L-6 -24 L18 -24 L26 0 M-6 -24 L2 0 L-26 0 M14 -30 L20 -30"/></g>'
-    return svg(defs, body, "Chill Rider 3D", "ZEN · BICI AL TRAMONTO · LO-FI", "#fffaf2", "#ffe9d6")
+    r = rnd(10)
+    defs = '<linearGradient id="dusk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb38a" stop-opacity="0.35"/><stop offset="1" stop-color="#7a4f9a" stop-opacity="0.35"/></linearGradient>'
+    body = '<rect width="640" height="400" fill="#9cc58a"/>'
+    # roads (top-down grid)
+    for x in (150, 400):
+        body += f'<rect x="{x}" y="0" width="56" height="400" fill="#d9cdb6"/><line x1="{x+28}" y1="0" x2="{x+28}" y2="400" stroke="#fff6e0" stroke-width="3" stroke-dasharray="14 12"/>'
+    for y in (110, 270):
+        body += f'<rect x="0" y="{y}" width="640" height="56" fill="#d9cdb6"/><line x1="0" y1="{y+28}" x2="640" y2="{y+28}" stroke="#fff6e0" stroke-width="3" stroke-dasharray="14 12"/>'
+    # houses / shops (roofs)
+    for (x, y, c) in [(40, 20, "#e0785a"), (240, 20, "#f2c14e"), (480, 20, "#7aa6d6"), (240, 180, "#e59ab8"), (480, 180, "#e0785a"), (40, 180, "#f2c14e")]:
+        body += f'<rect x="{x}" y="{y}" width="80" height="64" rx="4" fill="{c}"/><path d="M{x} {y+32} H{x+80}" stroke="#00000033" stroke-width="2"/>'
+    # trees
+    for i in range(16):
+        tx, ty = r.randint(10, 630), r.randint(10, 390)
+        if any(abs(tx - (x + 28)) < 46 for x in (150, 400)) or any(abs(ty - (y + 28)) < 46 for y in (110, 270)):
+            continue
+        body += f'<circle cx="{tx+3}" cy="{ty+4}" r="15" fill="#00000022"/><circle cx="{tx}" cy="{ty}" r="15" fill="#4f8d4a"/><circle cx="{tx-4}" cy="{ty-4}" r="7" fill="#67a85c"/>'
+    # delivery route + pin
+    body += '<path d="M178 215 V138 H428 V70" stroke="#ff5c7a" stroke-width="4" fill="none" stroke-dasharray="2 10" stroke-linecap="round"/>'
+    body += '<g transform="translate(428 62)"><path d="M0 0 c-14 -18 -14 -34 0 -34 c14 0 14 16 0 34z" fill="#ff5c7a"/><circle cx="0" cy="-22" r="5" fill="#fff"/></g>'
+    # bike with basket, seen from above
+    body += '<g transform="translate(178 225)"><rect x="-4" y="-26" width="8" height="52" rx="4" fill="#2c1e33"/><rect x="-14" y="-24" width="28" height="4" rx="2" fill="#2c1e33"/><rect x="-10" y="-36" width="20" height="12" rx="3" fill="#c98b4f"/><circle cx="-4" cy="-31" r="3" fill="#ff8fab"/><circle cx="4" cy="-31" r="3" fill="#fff17a"/><circle cx="0" cy="2" r="9" fill="#ffb38a"/></g>'
+    body += '<rect width="640" height="400" fill="url(#dusk)"/>'
+    return svg(defs, body, "Chill Rider", "ZEN · CONSEGNE IN BICI · LO-FI", "#fffaf2", "#fff0e0")
 
 
 COVERS = {
     "marginalia": marginalia, "brumafonda": brumafonda, "pentimento": pentimento,
     "ottavio": ottavio, "dolce-stil-novo": dolce, "legami": legami,
     "the-associations-garden": garden, "bitforge": bitforge,
-    "ladder-climbing": ladder, "chill-rider-3d": chillrider,
+    "ladder-climbing": ladder, "chill-rider": chillrider,
 }
 
 for slug, fn in COVERS.items():

@@ -83,6 +83,11 @@
   .play { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; color: var(--accent); }
   .card.soon .play { color: var(--muted); }
   .card[hidden] { display: none; }
+  .rel { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--muted); min-height: 0; }
+  .rel:empty { display: none; }
+  .ver { color: var(--bg); background: var(--accent); border-radius: 6px; padding: 2px 8px; font-weight: 700; letter-spacing: .04em; }
+  .rel a { position: relative; z-index: 2; color: var(--muted); text-decoration: none; border-bottom: 1px dashed #5a5047; }
+  .rel a:hover { color: var(--ink); border-color: var(--ink); }
 
   footer { border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--muted); font-family: var(--mono); font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   footer a { color: var(--ink); }
@@ -111,10 +116,11 @@
 <script>
   // Aggiungere un gioco: una riga qui sotto + covers/<slug>.svg (o .png).
   // play: null = non ancora giocabile online (la card porta al codice).
+  // version: versione di riserva (package.json/CHANGELOG); se il repo ha una Release su GitHub, vince quella.
   const ORG = "https://github.com/mayday-gaming";
   const PAGES = "https://mayday-gaming.github.io";
   const GAMES = [
-    { slug: "marginalia", title: "Marginalia", genre: "platform",
+    { slug: "marginalia", title: "Marginalia", genre: "platform", version: "1.0.0",
       desc: "Un platform narrativo in cui le piattaforme sono le righe dei libri. Postilla, una nota a matita, entra nelle storie per ripararle.",
       tags: ["platform", "narrativo"] },
     { slug: "brumafonda", title: "La Lanterna di Brumafonda", genre: "avventura",
@@ -129,7 +135,7 @@
     { slug: "bitforge", title: "Bitforge", genre: "crafting",
       desc: "Un gioco alla Forager sull'ingegneria informatica: dal silicio ai chip, fino alla CPU, per ricostruire il Kernel del mondo.",
       tags: ["crafting", "pixel art"] },
-    { slug: "ladder-climbing", title: "Big Company — Ladder Climbing", genre: "platform",
+    { slug: "ladder-climbing", title: "Big Company — Ladder Climbing", genre: "platform", version: "1.2.0",
       desc: "Platform arcade in ufficio: sette piani, sette boss e call improvvise, per salire dal 6° livello fino al Livello Super.",
       tags: ["arcade", "chiptune"] },
     { slug: "dolce-stil-novo", title: "Dolce Stil Novo", genre: "zen",
@@ -141,9 +147,9 @@
     { slug: "the-associations-garden", title: "The Associations Garden", genre: "zen",
       desc: "Solitario zen di associazioni tra parole, in italiano, con livelli infiniti generati da 45 categorie.",
       tags: ["zen", "parole"] },
-    { slug: "chill-rider-3d", title: "Chill Rider 3D", genre: "zen", play: null,
-      desc: "Bici al tramonto in un mondo low-poly, con la radio lo-fi accesa. Ancora da pubblicare online.",
-      tags: ["zen", "three.js"] },
+    { slug: "chill-rider", title: "Chill Rider", genre: "zen", version: "1.0.0",
+      desc: "Consegne in bici con il cestino di fiori, in città sempre diverse viste dall'alto. Ritiri dai negozi e consegni prima che scada il tempo, con la radio lo-fi accesa.",
+      tags: ["zen", "consegne"] },
   ];
   const GENRES = [
     ["tutti", "Tutti"], ["avventura", "Avventura"], ["zen", "Zen"],
@@ -161,6 +167,7 @@
       <div class="body">
         <h2><a href="${play || repo}">${esc(g.title)}</a></h2>
         <p>${esc(g.desc)}</p>
+        <div class="rel" data-slug="${g.slug}">${g.version ? `<span class="ver">v${esc(g.version.replace(/^v/, ""))}</span>` : ""}</div>
         <div class="meta">
           <div class="tags">${g.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
           ${play ? `<a class="code" href="${repo}">codice ↗</a>` : `<span class="play">presto online</span>`}
@@ -168,6 +175,30 @@
       </div>
     </article>`;
   }).join("");
+
+  // Ultima Release pubblicata su GitHub (se c'è), con cache di un'ora nel browser.
+  const fmtDate = iso => new Date(iso).toLocaleDateString("it-IT", { day: "numeric", month: "short", year: "numeric" });
+  async function latestRelease(slug) {
+    const key = `rel:${slug}`;
+    try {
+      const c = JSON.parse(localStorage.getItem(key) || "null");
+      if (c && Date.now() - c.t < 3600e3) return c.v;
+    } catch (e) {}
+    let v = null;
+    try {
+      const r = await fetch(`https://api.github.com/repos/mayday-gaming/${slug}/releases/latest`, { headers: { Accept: "application/vnd.github+json" } });
+      if (r.ok) { const j = await r.json(); v = { tag: j.tag_name, url: j.html_url, date: j.published_at }; }
+      else if (r.status !== 404) return null; // rate limit o errore: non mettere in cache
+    } catch (e) { return null; }
+    try { localStorage.setItem(key, JSON.stringify({ t: Date.now(), v })); } catch (e) {}
+    return v;
+  }
+  GAMES.forEach(async g => {
+    const rel = await latestRelease(g.slug);
+    if (!rel) return;
+    const el = grid.querySelector(`.rel[data-slug="${g.slug}"]`);
+    el.innerHTML = `<span class="ver">v${esc(rel.tag.replace(/^v/, ""))}</span><a href="${rel.url}">release del ${fmtDate(rel.date)} ↗</a>`;
+  });
 
   const filters = document.getElementById("filters");
   filters.innerHTML = GENRES.map(([k, label]) => {
