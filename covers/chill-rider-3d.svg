@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-label="Chill Rider 3D">
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b4b8a"/><stop offset="0.5" stop-color="#f08a7e"/><stop offset="1" stop-color="#ffcf9e"/></linearGradient>
+<linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0.55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.55"/></linearGradient>
+</defs>
+<rect width="640" height="400" fill="url(#sky)"/><circle cx="320" cy="250" r="90" fill="#ffe2a8" opacity="0.95"/><rect x="200" y="215" width="240" height="4" fill="#f4a38c" opacity="0.8"/><rect x="200" y="235" width="240" height="5" fill="#f4a38c" opacity="0.8"/><rect x="200" y="252" width="240" height="6" fill="#f4a38c" opacity="0.8"/><rect x="200" y="266" width="240" height="7" fill="#f4a38c" opacity="0.8"/><path d="M0 270 Q160 240 320 270 T640 262 V400 H0Z" fill="#a8607a"/><path d="M290 400 L316 270 L324 270 L350 400Z" fill="#6e3f5f"/><g transform="translate(470 300)" stroke="#2c1e33" stroke-width="4" fill="none" stroke-linecap="round"><circle cx="-26" cy="0" r="18"/><circle cx="26" cy="0" r="18"/><path d="M-26 0 L-6 -24 L18 -24 L26 0 M-6 -24 L2 0 L-26 0 M14 -30 L20 -30"/></g>
+<rect width="640" height="400" fill="url(#shade)"/>
+<text x="36" y="342" font-family="Georgia, 'Iowan Old Style', 'Times New Roman', serif" font-size="40" font-weight="700" fill="#fffaf2">Chill Rider 3D</text>
+<text x="38" y="372" font-family="'Courier New', ui-monospace, monospace" font-size="15" letter-spacing="2" fill="#ffe9d6">ZEN · BICI AL TRAMONTO · LO-FI</text>
+</svg>
