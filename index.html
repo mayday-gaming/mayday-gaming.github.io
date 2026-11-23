@@ -114,7 +114,7 @@
 </div>
 
 <script>
-  // Aggiungere un gioco: una riga qui sotto + covers/<slug>.svg (o .png).
+  // Aggiungere un gioco: una riga qui sotto + covers/<slug>.jpg (screenshot 960×600).
   // play: null = non ancora giocabile online (la card porta al codice).
   // version: versione di riserva (package.json/CHANGELOG); se il repo ha una Release su GitHub, vince quella.
   const ORG = "https://github.com/mayday-gaming";
@@ -126,10 +126,10 @@
     { slug: "brumafonda", title: "La Lanterna di Brumafonda", genre: "avventura",
       desc: "Action-adventure dall'alto alla Zelda, ad acquerello. Ilio e la lucciola Pip devono recuperare le tre Fiamme rubate.",
       tags: ["avventura", "acquerello"] },
-    { slug: "pentimento", title: "Pentimento", genre: "avventura",
+    { slug: "pentimento", title: "Pentimento", genre: "avventura", cover: "svg",
       desc: "Thriller sull'arte: sei una restauratrice romana che entra nei quadri per scoprire cosa ha nascosto il falsario.",
       tags: ["thriller", "go + ebitengine"] },
-    { slug: "ottavio", title: "Er Gatto de Roma", genre: "avventura",
+    { slug: "ottavio", title: "Ottavio", genre: "avventura",
       desc: "Ottavio, gatto soriano di Largo Argentina, gira per la Roma antica, ricostruita in scala 1:1. Capitolo I: Colosseo e Fori.",
       tags: ["esplorazione", "acquerello"] },
     { slug: "bitforge", title: "Bitforge", genre: "crafting",
@@ -147,9 +147,9 @@
     { slug: "the-associations-garden", title: "The Associations Garden", genre: "zen",
       desc: "Solitario zen di associazioni tra parole, in italiano, con livelli infiniti generati da 45 categorie.",
       tags: ["zen", "parole"] },
-    { slug: "chill-rider", title: "Chill Rider", genre: "zen", version: "1.0.0",
+    { slug: "chill-rider", title: "Chill Rider", genre: "avventura", version: "1.0.0",
       desc: "Consegne in bici con il cestino di fiori, in città sempre diverse viste dall'alto. Ritiri dai negozi e consegni prima che scada il tempo, con la radio lo-fi accesa.",
-      tags: ["zen", "consegne"] },
+      tags: ["avventura", "consegne"] },
   ];
   const GENRES = [
     ["tutti", "Tutti"], ["avventura", "Avventura"], ["zen", "Zen"],
@@ -163,7 +163,7 @@
     const play = g.play === null ? null : (g.play || `${PAGES}/${g.slug}/`);
     return `
     <article class="card${play ? "" : " soon"}" data-genre="${g.genre}">
-      <div class="cover"><img src="covers/${g.slug}.svg" alt="" loading="lazy" width="640" height="400"></div>
+      <div class="cover"><img src="covers/${g.slug}.${g.cover || "jpg"}" alt="" loading="lazy" width="960" height="600"></div>
       <div class="body">
         <h2><a href="${play || repo}">${esc(g.title)}</a></h2>
         <p>${esc(g.desc)}</p>
